@@ -1,2 +1,14 @@
 server:
   port: 10188
+spring:
+  datasource:
+    url: jdbc:mysql://10.28.166.24:3306/post_letter?serverTimezone=GMT%2B8&useSSL=true
+    username: wqy
+    password: 8585432988072225
+    hikari:
+      max-lifetime: 180000
+  thymeleaf:
+    cache: false
+mybatis:
+  mapper-locations: classpath:mappers/*.xml
+  type-aliases-package: top.rrricardo.postletterserver.models
