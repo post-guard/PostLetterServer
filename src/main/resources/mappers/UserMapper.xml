@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.rrricardo.postletterserver.mappers.UserMapper">
+    
+    <select id="getUsers" resultType="User">
+        select * from `users`;
+    </select>
+
+    <select id="getUserById" parameterType="int" resultType="User">
+        select * from `users` where `id`=#{id};
+    </select>
+
+    <insert id="createUser" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+        insert into `users` (emailAddress, nickname, password)
+        values (#{emailAddress}, #{nickname}, #{password});
+    </insert>
+
+    <update id="updateUser" parameterType="User">
+        update `users` set nickname=#{nickname}, emailAddress=#{emailAddress}, password=#{password}
+        where `id`=#{id};
+    </update>
+
+    <delete id="deleteUser" parameterType="int">
+        delete from `users` where `id`=#{id};
+    </delete>
+</mapper>
