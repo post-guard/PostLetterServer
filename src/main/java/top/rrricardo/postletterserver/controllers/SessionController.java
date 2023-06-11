@@ -49,6 +49,11 @@ public class SessionController extends ControllerBase {
             return badRequest();
         }
 
+        var oldSession = sessionMapper.getSessionById(id);
+        if (oldSession == null) {
+            return notFound();
+        }
+
         sessionMapper.updateSession(session);
 
         return ok(session);
