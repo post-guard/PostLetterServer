@@ -1,11 +1,12 @@
 package top.rrricardo.postletterserver.mappers;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.jetbrains.annotations.NotNull;
 import top.rrricardo.postletterserver.models.Participant;
-import top.rrricardo.postletterserver.models.Session;
 
 import java.util.List;
 
+@Mapper
 public interface ParticipantMapper {
     @NotNull
     List<Participant> getParticipants();
