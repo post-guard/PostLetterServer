@@ -38,7 +38,7 @@
             <scope>test</scope>
         </dependency>
 
-                <!--Json Web Token Library-->
+        <!--Json Web Token Library-->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
@@ -56,6 +56,13 @@
             <version>0.11.5</version>
             <scope>runtime</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>24.0.1</version>
+        </dependency>
+
     </dependencies>
 
     <build>

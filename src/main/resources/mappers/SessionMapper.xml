@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.rrricardo.postletterserver.mappers.SessionMapper">
+    <select id="getSessions" resultType="Session">
+        select *
+        from `sessions`;
+    </select>
+
+    <select id="getSessionById" parameterType="int" resultType="Session">
+        select *
+        from `sessions`
+        where `id` = #{id};
+    </select>
+
+    <insert id="createSession" parameterType="Session" useGeneratedKeys="true" keyProperty="id">
+        insert into `sessions` (name, details, level)
+        VALUES (#{name}, #{details}, #{level});
+    </insert>
+
+    <update id="updateSession" parameterType="Session">
+        update `sessions`
+        set `name`=#{name},
+            `details`=#{details},
+            `level`=#{level}
+        where `id` = #{id};
+    </update>
+
+    <delete id="deleteSession" parameterType="int">
+        delete
+        from `sessions`
+        where `id` = #{id};
+    </delete>
+</mapper>

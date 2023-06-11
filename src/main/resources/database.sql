@@ -1,5 +1,4 @@
-use post_letter;
-
+drop table if exists `users`;
 create table if not exists `users`
 (
     `id`           int         not null auto_increment,
@@ -9,19 +8,23 @@ create table if not exists `users`
     primary key (`id`)
 );
 
-create table if not exists `groups`
+drop table if exists `sessions`;
+create table if not exists `sessions`
 (
-    `id`      int         not null auto_increment,
-    `name`    varchar(20) not null,
-    `details` text,
+    `id` int not null  auto_increment,
+    `name` text not null ,
+    `details` text not null ,
+    `level` int not null ,
     primary key (`id`)
 );
 
-create table if not exists `user_group_links`
+drop table if exists `participants`;
+create table if not exists `participants`
 (
-    `id`         int not null auto_increment,
-    `userId`     int not null,
-    `groupId`    int not null,
-    `permission` int not null,
+    `id` int not null auto_increment,
+    `userId` int not null ,
+    `sessionId` int not null ,
+    `permission` int not null ,
     primary key (`id`)
 );
+
