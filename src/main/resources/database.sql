@@ -28,3 +28,14 @@ create table if not exists `participants`
     primary key (`id`)
 );
 
+drop table if exists `messages`;
+create table if not exists `messages`
+(
+    `id` int not null auto_increment,
+    `sessionId` int not null ,
+    `sendId` int not null ,
+    `text` text not null ,
+    `sendTime` DATETIME not null ,
+    primary key (`id`)
+);
+
