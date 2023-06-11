@@ -1,7 +1,8 @@
 package top.rrricardo.postletterserver.mappers;
 
-import jakarta.annotation.Nullable;
 import org.apache.ibatis.annotations.Mapper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import top.rrricardo.postletterserver.models.User;
 
 import java.util.List;
@@ -13,9 +14,9 @@ public interface UserMapper {
     @Nullable
     User getUserById(int id);
 
-    void createUser(User user);
+    void createUser(@NotNull User user);
 
-    void updateUser(User user);
+    void updateUser(@NotNull User user);
 
     void deleteUser(int id);
 }
