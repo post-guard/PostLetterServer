@@ -38,7 +38,7 @@ public class AuthorizeInterceptor implements HandlerInterceptor {
         }
 
         var tokenHeader = request.getHeader(JwtService.Header);
-        if (tokenHeader == null || !tokenHeader.startsWith(JwtService.tokenPrefix)) {
+        if (tokenHeader == null || !tokenHeader.startsWith(JwtService.TokenPrefix)) {
             var responseDto = new ResponseDTO<UserDTO>("No token provided");
             response.setStatus(401);
             response.getWriter().write(objectMapper.writeValueAsString(responseDto));

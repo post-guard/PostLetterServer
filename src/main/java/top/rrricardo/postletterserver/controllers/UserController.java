@@ -98,7 +98,11 @@ public class UserController extends ControllerBase {
 
             var user = userMapper.getUserById(loginDTO.getUserId());
 
-            return ok("登录成功", jwtService.generateJwtToken(user));
+            if (user != null) {
+                return ok("登录成功", jwtService.generateJwtToken(user));
+            } else {
+                return notFound("用户不存在");
+            }
         } catch (LoginException exception) {
             return badRequest(exception.getMessage());
         }
