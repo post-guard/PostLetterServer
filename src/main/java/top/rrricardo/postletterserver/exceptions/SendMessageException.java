@@ -9,4 +9,9 @@ public class SendMessageException extends Exception {
         super(text);
         this.message = message;
     }
+
+    public SendMessageException(Message message, String text, Exception exception) {
+        super(text, exception);
+        this.message = message;
+    }
 }

@@ -1,7 +1,10 @@
 package top.rrricardo.postletterserver.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
+import top.rrricardo.postletterserver.components.MessageWebsocketServer;
 import top.rrricardo.postletterserver.exceptions.SendMessageException;
 import top.rrricardo.postletterserver.mappers.MessageMapper;
 import top.rrricardo.postletterserver.mappers.ParticipantMapper;
@@ -13,6 +16,7 @@ public class MessageService {
     private final MessageMapper messageMapper;
     private final ParticipantMapper participantMapper;
     private final SessionMapper sessionMapper;
+    private final ObjectMapper objectMapper;
 
     public MessageService(MessageMapper messageMapper,
                           ParticipantMapper participantMapper,
@@ -20,6 +24,8 @@ public class MessageService {
         this.messageMapper = messageMapper;
         this.participantMapper = participantMapper;
         this.sessionMapper = sessionMapper;
+
+        objectMapper = new ObjectMapper();
     }
 
     /**
@@ -49,5 +55,15 @@ public class MessageService {
         }
 
         messageMapper.createMessage(message);
+
+        try {
+            var text = objectMapper.writeValueAsString(message);
+
+            for (var participant : participants) {
+                MessageWebsocketServer.sendMessage(text, participant.getUserId());
+            }
+        } catch (JsonProcessingException e) {
+            throw new SendMessageException(message, "JSON格式化异常", e);
+        }
     }
 }
