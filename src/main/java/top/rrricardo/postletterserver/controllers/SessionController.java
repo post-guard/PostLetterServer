@@ -2,9 +2,11 @@ package top.rrricardo.postletterserver.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import top.rrricardo.postletterserver.dtos.CreateSessionDto;
 import top.rrricardo.postletterserver.dtos.ResponseDTO;
 import top.rrricardo.postletterserver.mappers.SessionMapper;
 import top.rrricardo.postletterserver.models.Session;
+import top.rrricardo.postletterserver.services.SessionService;
 import top.rrricardo.postletterserver.utils.ControllerBase;
 
 import java.util.List;
@@ -13,9 +15,12 @@ import java.util.List;
 @RequestMapping("/session")
 public class SessionController extends ControllerBase {
     private final SessionMapper sessionMapper;
+    private final SessionService sessionService;
 
-    public SessionController(SessionMapper sessionMapper) {
+    public SessionController(SessionMapper sessionMapper,
+                             SessionService sessionService) {
         this.sessionMapper = sessionMapper;
+        this.sessionService = sessionService;
     }
 
     @GetMapping("/")
@@ -35,10 +40,12 @@ public class SessionController extends ControllerBase {
     }
 
     @PostMapping("/")
-    public ResponseEntity<ResponseDTO<Session>> createSession(@RequestBody Session session) {
-        sessionMapper.createSession(session);
+    public ResponseEntity<ResponseDTO<Session>> createSession(@RequestBody CreateSessionDto dto) {
+        if (dto.getParticipants().size() < 2) {
+            return badRequest();
+        }
 
-        return created(session);
+        return created(sessionService.createSession(dto));
     }
 
     @PutMapping("/{id}")
