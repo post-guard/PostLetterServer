@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.rrricardo.postletterserver.mappers.FriendMapper">
+    <select id="getFriends" resultType="Friend">
+        select * from `friends`;
+    </select>
+
+    <select id="getFriendById" parameterType="int" resultType="Friend">
+        select * from `friends` where `id`=#{id};
+    </select>
+
+    <insert id="createFriend" parameterType="Friend" useGeneratedKeys="true" keyProperty="id">
+        insert into `friends` (userId, friendId, sessionId)
+        VALUES (#{userId}, #{friendId}, #{sessionId});
+    </insert>
+
+    <update id="updateFriend" parameterType="Friend">
+        update `friends`
+        set `userId` = #{userId},
+            `friendId` = #{friendId},
+            `sessionId` = #{sessionId}
+        where `id`=#{id};
+    </update>
+
+    <delete id="deleteFriend" parameterType="int">
+        delete from `friends` where `id`=#{id};
+    </delete>
+</mapper>

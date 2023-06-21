@@ -39,3 +39,15 @@ create table if not exists `messages`
     primary key (`id`)
 );
 
+drop table if exists `friends`;
+create table if not exists `friends`
+(
+    `id` int not null auto_increment,
+    `userId` int not null ,
+    `friendId` int not null ,
+    `sessionId` int not null ,
+    primary key (`id`)
+);
+
+
+
