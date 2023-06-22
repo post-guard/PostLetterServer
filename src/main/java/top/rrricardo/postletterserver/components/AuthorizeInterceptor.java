@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -21,6 +22,11 @@ public class AuthorizeInterceptor implements HandlerInterceptor {
 
     public AuthorizeInterceptor(JwtService jwtService) {
         this.jwtService = jwtService;
+    }
+
+    @NotNull
+    public static UserDTO getOperator() {
+        return local.get();
     }
 
     @Override

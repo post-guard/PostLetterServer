@@ -62,6 +62,11 @@ public class SessionService {
         sessionMapper.createSession(session);
         participantMapper.createParticipant(new Participant(creator.getId(), session.getId(), 2));
         for (var user : people) {
+            if (user.getId() == creator.getId()) {
+                // 跳过群主
+                break;
+            }
+
             participantMapper.createParticipant(new Participant(user.getId(), session.getId(), 0));
         }
 

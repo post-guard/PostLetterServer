@@ -1,12 +1,12 @@
-package top.rrricardo.postletterserver.models;
+package top.rrricardo.postletterserver.dtos;
 
 import org.jetbrains.annotations.NotNull;
+import top.rrricardo.postletterserver.models.User;
 
 import java.io.Serializable;
+import java.util.List;
 
-public class Group implements Serializable {
-    private int id;
-
+public class GroupDTO implements Serializable {
     @NotNull
     private String name;
 
@@ -15,18 +15,19 @@ public class Group implements Serializable {
 
     private int sessionId;
 
-    public Group(@NotNull String name, @NotNull String details, int sessionId) {
+    @NotNull
+    private List<Integer> participants;
+
+    public GroupDTO(
+            @NotNull String name,
+            @NotNull String details,
+            int sessionId,
+            @NotNull List<Integer> participants
+    ) {
         this.name = name;
         this.details = details;
         this.sessionId = sessionId;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+        this.participants = participants;
     }
 
     @NotNull
@@ -38,8 +39,7 @@ public class Group implements Serializable {
         this.name = name;
     }
 
-    @NotNull
-    public String getDetails() {
+    public @NotNull String getDetails() {
         return details;
     }
 
@@ -53,5 +53,13 @@ public class Group implements Serializable {
 
     public void setSessionId(int sessionId) {
         this.sessionId = sessionId;
+    }
+
+    public @NotNull List<Integer> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(@NotNull List<Integer> participants) {
+        this.participants = participants;
     }
 }
