@@ -12,6 +12,9 @@ public interface FriendMapper {
     @NotNull
     List<Friend> getFriends();
 
+    @NotNull
+    List<Friend> getFriendsByUserId(int userId);
+
     @Nullable
     Friend getFriendById(int id);
 

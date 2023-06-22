@@ -2,7 +2,6 @@ package top.rrricardo.postletterserver.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import top.rrricardo.postletterserver.dtos.CreateSessionDto;
 import top.rrricardo.postletterserver.dtos.ResponseDTO;
 import top.rrricardo.postletterserver.mappers.SessionMapper;
 import top.rrricardo.postletterserver.models.Session;
@@ -37,15 +36,6 @@ public class SessionController extends ControllerBase {
         }
 
         return ok(session);
-    }
-
-    @PostMapping("/")
-    public ResponseEntity<ResponseDTO<Session>> createSession(@RequestBody CreateSessionDto dto) {
-        if (dto.getParticipants().size() < 2) {
-            return badRequest();
-        }
-
-        return created(sessionService.createSession(dto));
     }
 
     @PutMapping("/{id}")

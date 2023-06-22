@@ -9,6 +9,10 @@
         select * from `friends` where `id`=#{id};
     </select>
 
+    <select id="getFriendsByUserId" parameterType="int" resultType="Friend">
+        select * from `friends` where `userId`=#{userId};
+    </select>
+
     <insert id="createFriend" parameterType="Friend" useGeneratedKeys="true" keyProperty="id">
         insert into `friends` (userId, friendId, sessionId)
         VALUES (#{userId}, #{friendId}, #{sessionId});

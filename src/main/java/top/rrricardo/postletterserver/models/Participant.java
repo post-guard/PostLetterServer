@@ -11,6 +11,12 @@ public class Participant implements Serializable {
 
     private int permission;
 
+    public Participant(int userId, int sessionId, int permission) {
+        this.userId = userId;
+        this.sessionId = sessionId;
+        this.permission = permission;
+    }
+
 
     public int getId() {
         return id;
