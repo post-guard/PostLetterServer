@@ -6,7 +6,7 @@ public class User {
     private int id;
 
     @NotNull
-    private String emailAddress;
+    private String username;
 
     @NotNull
     private String nickname;
@@ -15,7 +15,7 @@ public class User {
     private String password;
 
     public User(@NotNull String emailAddress, @NotNull String nickname, @NotNull String password) {
-        this.emailAddress = emailAddress;
+        this.username = emailAddress;
         this.nickname = nickname;
         this.password = password;
     }
@@ -29,12 +29,12 @@ public class User {
     }
 
     @NotNull
-    public String getEmailAddress() {
-        return emailAddress;
+    public String getUsername() {
+        return username;
     }
 
-    public void setEmailAddress(@NotNull String emailAddress) {
-        this.emailAddress = emailAddress;
+    public void setUsername(@NotNull String username) {
+        this.username = username;
     }
 
     @NotNull

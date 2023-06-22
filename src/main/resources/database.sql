@@ -2,7 +2,7 @@ drop table if exists `users`;
 create table if not exists `users`
 (
     `id`           int         not null auto_increment,
-    `emailAddress` text        not null,
+    `username` text        not null,
     `nickname`     text        not null,
     `password`     varchar(64) not null,
     primary key (`id`)

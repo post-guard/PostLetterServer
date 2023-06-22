@@ -94,15 +94,9 @@ public class UserController extends ControllerBase {
     @PostMapping("/login")
     public ResponseEntity<ResponseDTO<String>> login(@RequestBody LoginDTO loginDTO) {
         try {
-            userService.login(loginDTO);
+            var user = userService.login(loginDTO);
 
-            var user = userMapper.getUserById(loginDTO.getUserId());
-
-            if (user != null) {
-                return ok("登录成功", jwtService.generateJwtToken(user));
-            } else {
-                return notFound("用户不存在");
-            }
+            return ok("登录成功", jwtService.generateJwtToken(user));
         } catch (LoginException exception) {
             return badRequest(exception.getMessage());
         }

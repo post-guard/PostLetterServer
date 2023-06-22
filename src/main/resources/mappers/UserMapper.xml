@@ -11,12 +11,12 @@
     </select>
 
     <insert id="createUser" parameterType="User" useGeneratedKeys="true" keyProperty="id">
-        insert into `users` (emailAddress, nickname, password)
-        values (#{emailAddress}, #{nickname}, #{password});
+        insert into `users` (username, nickname, password)
+        values (#{username}, #{nickname}, #{password});
     </insert>
 
     <update id="updateUser" parameterType="User">
-        update `users` set nickname=#{nickname}, emailAddress=#{emailAddress}, password=#{password}
+        update `users` set nickname=#{nickname}, username=#{username}, password=#{password}
         where `id`=#{id};
     </update>
 

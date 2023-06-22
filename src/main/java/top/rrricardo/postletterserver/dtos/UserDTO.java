@@ -9,18 +9,18 @@ public class UserDTO implements Serializable {
 
     private String nickname;
 
-    private String emailAddress;
+    private String username;
 
     public UserDTO(User user) {
         id = user.getId();
         nickname = user.getNickname();
-        emailAddress = user.getEmailAddress();
+        username = user.getUsername();
     }
 
     public UserDTO(int id, String nickname, String emailAddress) {
         this.id = id;
         this.nickname = nickname;
-        this.emailAddress = emailAddress;
+        this.username = emailAddress;
     }
 
     public int getId() {
@@ -39,11 +39,11 @@ public class UserDTO implements Serializable {
         this.nickname = nickname;
     }
 
-    public String getEmailAddress() {
-        return emailAddress;
+    public String getUsername() {
+        return username;
     }
 
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
