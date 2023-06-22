@@ -2,6 +2,7 @@ package top.rrricardo.postletterserver.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import top.rrricardo.postletterserver.annotations.Authorize;
 import top.rrricardo.postletterserver.dtos.ResponseDTO;
 import top.rrricardo.postletterserver.mappers.FriendMapper;
 import top.rrricardo.postletterserver.models.Friend;
@@ -25,6 +26,7 @@ public class FriendController extends ControllerBase {
     }
 
     @GetMapping("/")
+    @Authorize
     public ResponseEntity<ResponseDTO<List<Friend>>> getFriends(
             @RequestParam(defaultValue = "0") int userId) {
         if (userId <= 0) {
@@ -35,6 +37,7 @@ public class FriendController extends ControllerBase {
     }
 
     @PostMapping("/")
+    @Authorize
     public ResponseEntity<ResponseDTO<Friend>> createFriend(@RequestBody Friend friend) {
         if (friend == null) {
             return badRequest();
@@ -48,6 +51,7 @@ public class FriendController extends ControllerBase {
     }
 
     @DeleteMapping("/{id}")
+    @Authorize
     public ResponseEntity<ResponseDTO<Friend>> deleteFriend(@PathVariable int id) {
         try {
             friendService.removeFriend(id);

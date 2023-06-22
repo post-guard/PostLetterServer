@@ -2,6 +2,7 @@ package top.rrricardo.postletterserver.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import top.rrricardo.postletterserver.annotations.Authorize;
 import top.rrricardo.postletterserver.dtos.ResponseDTO;
 import top.rrricardo.postletterserver.mappers.SessionMapper;
 import top.rrricardo.postletterserver.models.Session;
@@ -23,11 +24,13 @@ public class SessionController extends ControllerBase {
     }
 
     @GetMapping("/")
+    @Authorize
     public ResponseEntity<ResponseDTO<List<Session>>> getSessions() {
         return ok(sessionMapper.getSessions());
     }
 
     @GetMapping("/{id}")
+    @Authorize
     public ResponseEntity<ResponseDTO<Session>> getSessionsById(@PathVariable int id) {
         var session = sessionMapper.getSessionById(id);
 
@@ -39,6 +42,7 @@ public class SessionController extends ControllerBase {
     }
 
     @PutMapping("/{id}")
+    @Authorize
     public ResponseEntity<ResponseDTO<Session>> updateSession(
             @PathVariable int id,
             @RequestBody Session session) {
@@ -57,6 +61,7 @@ public class SessionController extends ControllerBase {
     }
 
     @DeleteMapping("/{id}")
+    @Authorize
     public ResponseEntity<ResponseDTO<Session>> deleteSession(@PathVariable int id) {
         var session = sessionMapper.getSessionById(id);
 

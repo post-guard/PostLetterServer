@@ -2,6 +2,7 @@ package top.rrricardo.postletterserver.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import top.rrricardo.postletterserver.annotations.Authorize;
 import top.rrricardo.postletterserver.dtos.ResponseDTO;
 import top.rrricardo.postletterserver.exceptions.SendMessageException;
 import top.rrricardo.postletterserver.mappers.MessageMapper;
@@ -28,11 +29,13 @@ public class MessageController extends ControllerBase {
     }
 
     @GetMapping("/")
+    @Authorize
     public ResponseEntity<ResponseDTO<List<Message>>> getMessages() {
         return ok(messageMapper.getMessages());
     }
 
     @GetMapping("/session/{sessionId}")
+    @Authorize
     public ResponseEntity<ResponseDTO<List<Message>>> getMessagesBySessionId(@PathVariable int sessionId) {
         var session = sessionMapper.getSessionById(sessionId);
 
@@ -44,6 +47,7 @@ public class MessageController extends ControllerBase {
     }
 
     @PostMapping("/send")
+    @Authorize
     public ResponseEntity<ResponseDTO<Message>> sendMessage(@RequestBody Message message) {
         try {
             messageService.sendMessage(message);

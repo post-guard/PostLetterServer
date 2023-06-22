@@ -2,6 +2,7 @@ package top.rrricardo.postletterserver.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import top.rrricardo.postletterserver.annotations.Authorize;
 import top.rrricardo.postletterserver.dtos.LoginDTO;
 import top.rrricardo.postletterserver.dtos.ResponseDTO;
 import top.rrricardo.postletterserver.dtos.UserDTO;
@@ -29,6 +30,7 @@ public class UserController extends ControllerBase {
     }
 
     @GetMapping("/")
+    @Authorize
     public ResponseEntity<ResponseDTO<List<UserDTO>>> getUsers() {
         var users = userMapper.getUsers();
 
@@ -42,6 +44,7 @@ public class UserController extends ControllerBase {
     }
 
     @GetMapping("/{id}")
+    @Authorize
     public ResponseEntity<ResponseDTO<UserDTO>> getUserById(@PathVariable int id) {
         var user = userMapper.getUserById(id);
 
@@ -53,6 +56,7 @@ public class UserController extends ControllerBase {
     }
 
     @PutMapping("/{id}")
+    @Authorize
     public ResponseEntity<ResponseDTO<UserDTO>> updateUser(
             @PathVariable int id,
             @RequestBody User user) {
@@ -72,6 +76,7 @@ public class UserController extends ControllerBase {
     }
 
     @DeleteMapping("/{id}")
+    @Authorize
     public ResponseEntity<ResponseDTO<UserDTO>> deleteUser(@PathVariable int id) {
         var oldUser = userMapper.getUserById(id);
 

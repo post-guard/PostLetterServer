@@ -2,6 +2,7 @@ package top.rrricardo.postletterserver.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import top.rrricardo.postletterserver.annotations.Authorize;
 import top.rrricardo.postletterserver.dtos.ResponseDTO;
 import top.rrricardo.postletterserver.mappers.ParticipantMapper;
 import top.rrricardo.postletterserver.mappers.SessionMapper;
@@ -28,11 +29,13 @@ public class ParticipantController extends ControllerBase {
     }
 
     @GetMapping("/")
+    @Authorize
     public ResponseEntity<ResponseDTO<List<Participant>>> getParticipants() {
         return ok(participantMapper.getParticipants());
     }
 
     @GetMapping("/{id}")
+    @Authorize
     public ResponseEntity<ResponseDTO<Participant>> getParticipantById(@PathVariable int id) {
         var participant = participantMapper.getParticipantById(id);
 
@@ -44,6 +47,7 @@ public class ParticipantController extends ControllerBase {
     }
 
     @GetMapping("/user/{userId}")
+    @Authorize
     public ResponseEntity<ResponseDTO<List<Participant>>> getParticipantsByUserId(
             @PathVariable int userId) {
         var user = userMapper.getUserById(userId);
@@ -56,6 +60,7 @@ public class ParticipantController extends ControllerBase {
     }
 
     @GetMapping("/session/{sessionId}")
+    @Authorize
     public ResponseEntity<ResponseDTO<List<Participant>>> getParticipantsBySessionId(
             @PathVariable int sessionId) {
         var session = sessionMapper.getSessionById(sessionId);
@@ -68,6 +73,7 @@ public class ParticipantController extends ControllerBase {
     }
 
     @PostMapping("/")
+    @Authorize
     public ResponseEntity<ResponseDTO<Participant>> createParticipant(@RequestBody Participant participant) {
         participantMapper.createParticipant(participant);
 
@@ -75,6 +81,7 @@ public class ParticipantController extends ControllerBase {
     }
 
     @PutMapping("/{id}")
+    @Authorize
     public ResponseEntity<ResponseDTO<Participant>> updateParticipant(
             @PathVariable int id,
             @RequestBody Participant participant
@@ -94,6 +101,7 @@ public class ParticipantController extends ControllerBase {
     }
 
     @DeleteMapping("/{id}")
+    @Authorize
     public ResponseEntity<ResponseDTO<Participant>> deleteParticipant(@PathVariable int id) {
         var participant = participantMapper.getParticipantById(id);
 
