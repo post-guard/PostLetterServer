@@ -86,9 +86,13 @@ public class UserController extends ControllerBase {
 
     @PostMapping("/register")
     public ResponseEntity<ResponseDTO<UserDTO>> register(@RequestBody User user) {
-        userService.register(user);
+        try {
+            userService.register(user);
 
-        return created(new UserDTO(user));
+            return created(new UserDTO(user));
+        } catch (IllegalArgumentException e) {
+            return badRequest(e.getMessage());
+        }
     }
 
     @PostMapping("/login")
