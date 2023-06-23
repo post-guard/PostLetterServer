@@ -11,17 +11,20 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import top.rrricardo.postletterserver.annotations.Authorize;
 import top.rrricardo.postletterserver.dtos.ResponseDTO;
 import top.rrricardo.postletterserver.dtos.UserDTO;
+import top.rrricardo.postletterserver.services.HeartbeatService;
 import top.rrricardo.postletterserver.services.JwtService;
 
 @Component
 public class AuthorizeInterceptor implements HandlerInterceptor {
     private final JwtService jwtService;
+    private final HeartbeatService heartbeatService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private static final ThreadLocal<UserDTO> local = new ThreadLocal<>();
 
-    public AuthorizeInterceptor(JwtService jwtService) {
+    public AuthorizeInterceptor(JwtService jwtService, HeartbeatService heartbeatService) {
         this.jwtService = jwtService;
+        this.heartbeatService = heartbeatService;
     }
 
     @NotNull
@@ -30,7 +33,10 @@ public class AuthorizeInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(
+            @NotNull HttpServletRequest request,
+            @NotNull HttpServletResponse response,
+            @NotNull Object handler) throws Exception {
         if (!(handler instanceof HandlerMethod handlerMethod)) {
             return true;
         }
@@ -61,6 +67,7 @@ public class AuthorizeInterceptor implements HandlerInterceptor {
             );
 
             local.set(userDto);
+            heartbeatService.setHostname(userDto.getId(), claims.get("hostname", String.class));
 
             return true;
         } catch (JwtException exception) {
