@@ -33,7 +33,7 @@ public class JwtService {
         key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateJwtToken(User user) {
+    public String generateJwtToken(User user, String hostname) {
         var data = new Date();
         var expireData = new Date(data.getTime() + ttl * 24 * 3600 * 1000);
 
@@ -44,7 +44,8 @@ public class JwtService {
                 .setIssuedAt(data)
                 .setExpiration(expireData)
                 .claim("userId", user.getId())
-                .claim("emailAddress", user.getUsername())
+                .claim("username", user.getUsername())
+                .claim("hostname", hostname)
                 .signWith(key)
                 .compact();
 

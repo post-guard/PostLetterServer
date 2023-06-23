@@ -1,7 +1,6 @@
 package top.rrricardo.postletterserver.dtos;
 
 import org.jetbrains.annotations.NotNull;
-import top.rrricardo.postletterserver.models.User;
 
 import java.io.Serializable;
 import java.util.List;

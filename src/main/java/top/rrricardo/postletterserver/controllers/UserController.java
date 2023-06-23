@@ -105,7 +105,7 @@ public class UserController extends ControllerBase {
         try {
             var user = userService.login(loginDTO);
 
-            return ok("登录成功", jwtService.generateJwtToken(user));
+            return ok("登录成功", jwtService.generateJwtToken(user, loginDTO.getHostname()));
         } catch (LoginException exception) {
             return badRequest(exception.getMessage());
         }

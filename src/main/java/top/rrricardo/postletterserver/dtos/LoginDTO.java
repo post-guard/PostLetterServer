@@ -8,6 +8,8 @@ public class LoginDTO {
 
     private String password;
 
+    private String hostname;
+
     public String getPassword() {
         return password;
     }
@@ -22,5 +24,13 @@ public class LoginDTO {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getHostname() {
+        return hostname;
+    }
+
+    public void setHostname(String hostname) {
+        this.hostname = hostname;
     }
 }

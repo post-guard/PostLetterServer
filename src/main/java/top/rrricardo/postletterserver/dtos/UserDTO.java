@@ -17,10 +17,10 @@ public class UserDTO implements Serializable {
         username = user.getUsername();
     }
 
-    public UserDTO(int id, String nickname, String emailAddress) {
+    public UserDTO(int id, String nickname, String username) {
         this.id = id;
         this.nickname = nickname;
-        this.username = emailAddress;
+        this.username = username;
     }
 
     public int getId() {

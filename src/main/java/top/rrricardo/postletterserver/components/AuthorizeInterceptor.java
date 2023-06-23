@@ -57,7 +57,7 @@ public class AuthorizeInterceptor implements HandlerInterceptor {
             var userDto = new UserDTO(
                     claims.get("userId", Integer.class),
                     claims.getIssuer(),
-                    claims.get("emailAddress", String.class)
+                    claims.get("username", String.class)
             );
 
             local.set(userDto);
