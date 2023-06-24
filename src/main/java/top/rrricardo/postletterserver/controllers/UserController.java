@@ -9,6 +9,7 @@ import top.rrricardo.postletterserver.dtos.UserDTO;
 import top.rrricardo.postletterserver.exceptions.LoginException;
 import top.rrricardo.postletterserver.mappers.UserMapper;
 import top.rrricardo.postletterserver.models.User;
+import top.rrricardo.postletterserver.services.HeartbeatService;
 import top.rrricardo.postletterserver.services.JwtService;
 import top.rrricardo.postletterserver.services.UserService;
 import top.rrricardo.postletterserver.utils.ControllerBase;
@@ -22,11 +23,17 @@ public class UserController extends ControllerBase {
     private final UserMapper userMapper;
     private final UserService userService;
     private final JwtService jwtService;
+    private final HeartbeatService heartbeatService;
 
-    public UserController(UserMapper userMapper, UserService userService, JwtService jwtService) {
+    public UserController(
+            UserMapper userMapper,
+            UserService userService,
+            JwtService jwtService,
+            HeartbeatService heartbeatService) {
         this.userMapper = userMapper;
         this.userService = userService;
         this.jwtService = jwtService;
+        this.heartbeatService = heartbeatService;
     }
 
     @GetMapping("/")
@@ -89,6 +96,18 @@ public class UserController extends ControllerBase {
         return noContent();
     }
 
+    @GetMapping("/online/{id}")
+    @Authorize
+    public ResponseEntity<ResponseDTO<Boolean>> queryOnline(@PathVariable int id) {
+        var user = userMapper.getUserById(id);
+
+        if (user == null) {
+            return notFound("查询的用户不存在");
+        }
+
+        return ok(heartbeatService.queryOnlineState(id));
+    }
+
     @PostMapping("/register")
     public ResponseEntity<ResponseDTO<UserDTO>> register(@RequestBody User user) {
         try {
@@ -104,6 +123,8 @@ public class UserController extends ControllerBase {
     public ResponseEntity<ResponseDTO<String>> login(@RequestBody LoginDTO loginDTO) {
         try {
             var user = userService.login(loginDTO);
+
+            heartbeatService.setHostname(user.getId(), loginDTO.getHostname());
 
             return ok("登录成功", jwtService.generateJwtToken(user, loginDTO.getHostname()));
         } catch (LoginException exception) {

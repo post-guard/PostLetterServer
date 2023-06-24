@@ -67,9 +67,8 @@ public class AuthorizeInterceptor implements HandlerInterceptor {
             );
 
             local.set(userDto);
-            heartbeatService.setHostname(userDto.getId(), claims.get("hostname", String.class));
 
-            return true;
+            return heartbeatService.validateHostname(userDto.getId(), claims.get("hostname", String.class));
         } catch (JwtException exception) {
             var responseDto = new ResponseDTO<UserDTO>(exception.getMessage());
 
