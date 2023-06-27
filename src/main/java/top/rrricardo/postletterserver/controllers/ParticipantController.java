@@ -111,6 +111,6 @@ public class ParticipantController extends ControllerBase {
 
         participantMapper.deleteParticipant(id);
 
-        return ok();
+        return ok("删除成功", participant);
     }
 }

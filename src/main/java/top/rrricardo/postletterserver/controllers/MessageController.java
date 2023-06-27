@@ -52,7 +52,7 @@ public class MessageController extends ControllerBase {
         try {
             messageService.sendMessage(message);
 
-            return ok();
+            return ok(message);
         } catch (SendMessageException exception) {
             return badRequest(exception.getMessage());
         }

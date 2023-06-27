@@ -19,7 +19,6 @@ import top.rrricardo.postletterserver.utils.ControllerBase;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/user")
@@ -98,7 +97,7 @@ public class UserController extends ControllerBase {
 
         userMapper.deleteUser(id);
 
-        return noContent();
+        return ok("删除成功", new UserDTO(oldUser));
     }
 
     @GetMapping("/online/{id}")

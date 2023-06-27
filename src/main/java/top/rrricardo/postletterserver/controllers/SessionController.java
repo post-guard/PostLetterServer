@@ -71,6 +71,6 @@ public class SessionController extends ControllerBase {
 
         sessionMapper.deleteSession(id);
 
-        return noContent();
+        return ok("删除成功", session);
     }
 }

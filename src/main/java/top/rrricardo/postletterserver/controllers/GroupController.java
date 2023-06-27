@@ -36,7 +36,7 @@ public class GroupController extends ControllerBase {
         try {
             groupService.createGroup(operator.getId(), groupDTO);
 
-            return created();
+            return created(groupDTO);
         } catch (IllegalArgumentException e) {
             return badRequest(e.getMessage());
         }
@@ -49,7 +49,7 @@ public class GroupController extends ControllerBase {
 
         try {
             groupService.deleteGroup(operator.getId(), groupDTO);
-            return noContent();
+            return ok("删除成功", groupDTO);
         } catch (IllegalArgumentException e) {
             return badRequest(e.getMessage());
         }

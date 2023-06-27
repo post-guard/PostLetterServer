@@ -72,8 +72,13 @@ public class FriendController extends ControllerBase {
     @Authorize
     public ResponseEntity<ResponseDTO<Friend>> deleteFriend(@PathVariable int id) {
         try {
+            var friend = friendMapper.getFriendById(id);
+            if (friend == null) {
+                return notFound();
+            }
+
             friendService.removeFriend(id);
-            return noContent();
+            return ok("删除成功", friend);
         } catch (IllegalArgumentException e) {
             return badRequest(e.getMessage());
         }

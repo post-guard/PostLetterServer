@@ -41,24 +41,6 @@ public class ControllerBase {
                 HttpStatus.CREATED);
     }
 
-    protected static <T> ResponseEntity<ResponseDTO<T>> noContent() {
-        return new ResponseEntity<>(new ResponseDTO<>("删除成功"), HttpStatus.NO_CONTENT);
-    }
-
-    protected static <T> ResponseEntity<ResponseDTO<T>> noContent(String message) {
-        return new ResponseEntity<>(new ResponseDTO<>(message), HttpStatus.NO_CONTENT);
-    }
-
-    protected static <T> ResponseEntity<ResponseDTO<T>> noContent(T data) {
-        return new ResponseEntity<>(new ResponseDTO<>("删除成功", data),
-                HttpStatus.NO_CONTENT);
-    }
-
-    protected static <T> ResponseEntity<ResponseDTO<T>> noContent(String message, T data) {
-        return new ResponseEntity<>(new ResponseDTO<>(message, data),
-                HttpStatus.NO_CONTENT);
-    }
-
     protected static <T> ResponseEntity<ResponseDTO<T>> badRequest() {
         return new ResponseEntity<>(new ResponseDTO<>("请求错误"), HttpStatus.BAD_REQUEST);
     }
