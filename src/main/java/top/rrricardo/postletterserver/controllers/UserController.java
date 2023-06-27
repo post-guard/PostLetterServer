@@ -1,5 +1,7 @@
 package top.rrricardo.postletterserver.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import top.rrricardo.postletterserver.annotations.Authorize;
@@ -15,7 +17,9 @@ import top.rrricardo.postletterserver.services.UserService;
 import top.rrricardo.postletterserver.utils.ControllerBase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/user")
@@ -24,6 +28,7 @@ public class UserController extends ControllerBase {
     private final UserService userService;
     private final JwtService jwtService;
     private final HeartbeatService heartbeatService;
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     public UserController(
             UserMapper userMapper,
@@ -120,13 +125,20 @@ public class UserController extends ControllerBase {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseDTO<String>> login(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<ResponseDTO<HashMap<String, Object>>> login(@RequestBody LoginDTO loginDTO) {
         try {
             var user = userService.login(loginDTO);
 
             heartbeatService.setHostname(user.getId(), loginDTO.getHostname());
 
-            return ok("登录成功", jwtService.generateJwtToken(user, loginDTO.getHostname()));
+            logger.info("用户{}在设备{}上登录", loginDTO.getUsername(), loginDTO.getHostname());
+            var map = new HashMap<String, Object>();
+            map.put("id", user.getId());
+            map.put("nickname", user.getNickname());
+            map.put("username", user.getUsername());
+            map.put("token", jwtService.generateJwtToken(user, loginDTO.getHostname()));
+
+            return ok(map);
         } catch (LoginException exception) {
             return badRequest(exception.getMessage());
         }
