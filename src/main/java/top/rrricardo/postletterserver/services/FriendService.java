@@ -1,16 +1,29 @@
 package top.rrricardo.postletterserver.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import top.rrricardo.postletterserver.components.MessageWebsocketServer;
 import top.rrricardo.postletterserver.mappers.FriendMapper;
 import top.rrricardo.postletterserver.mappers.UserMapper;
 import top.rrricardo.postletterserver.models.Friend;
+import top.rrricardo.postletterserver.models.Message;
+import top.rrricardo.postletterserver.models.User;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class FriendService {
     private final FriendMapper friendMapper;
     private final UserMapper userMapper;
     private final SessionService sessionService;
+    private final Logger logger;
+
+    private static final ObjectMapper s_mapper = new ObjectMapper();
 
     public FriendService(
             FriendMapper friendMapper,
@@ -19,6 +32,8 @@ public class FriendService {
         this.friendMapper = friendMapper;
         this.userMapper = userMapper;
         this.sessionService = sessionService;
+
+        logger = LoggerFactory.getLogger(getClass());
     }
 
     @NotNull
@@ -26,40 +41,48 @@ public class FriendService {
         // 判断指定的二人是否已经是好友关系
         var friends = friendMapper.getFriends();
 
-        Friend oldFriend = null;
-        for (var friend : friends) {
-            if ((friend.getUserId() == userId && friend.getFriendId() == friendId)
-            || (friend.getUserId() == friendId && friend.getFriendId() == userId)) {
-                oldFriend = friend;
-                break;
+        Friend friend = null;
+        Friend exFriend = null;
+        for (var i : friends) {
+            if (userId == i.getUserId() && friendId == i.getFriendId()) {
+                friend = i;
+            }
+
+            if (friendId == i.getFriendId() && userId == i.getUserId()) {
+                exFriend = i;
             }
         }
 
-        if (oldFriend != null) {
-            return oldFriend;
-        }
-
-        // 二人还不是好友关系
         var user = userMapper.getUserById(userId);
-        var friend = userMapper.getUserById(friendId);
+        var friendUser = userMapper.getUserById(friendId);
 
-        if (user == null || friend == null) {
-            // 有一个是鬼
-            throw new IllegalArgumentException("指定的用户不存在");
+        if (user == null || friendUser == null) {
+            throw new IllegalArgumentException("有一个用户是鬼");
         }
 
-        var session = sessionService.createFriendSession(user, friend);
-        // 同时创建两边的好友
-        // 但是使用同一个会话
-        var friend1 = new Friend(userId, friendId);
-        var friend2 = new Friend(friendId, userId);
-        friend1.setSessionId(session.getId());
-        friend2.setSessionId(session.getId());
+        if (friend == null && exFriend == null) {
+            // 两者还不是好友关系
+            friend = new Friend(userId, friendId);
+            friendMapper.createFriend(friend);
 
-        friendMapper.createFriend(friend1);
-        friendMapper.createFriend(friend2);
+            sendFriendMessage(friendId, user.getNickname() + "请求添加您为好友！");
+        } else if (friend == null) {
+            // 通过好友请求
+            friend = new Friend(userId, friendId);
 
-        return friend1;
+            var session = sessionService.createFriendSession(user, friendUser);
+            friend.setSessionId(session.getId());
+            exFriend.setFriendId(session.getId());
+
+            friendMapper.createFriend(friend);
+            friendMapper.updateFriend(exFriend);
+        } else if (exFriend == null) {
+            // 再次发送好友请求
+
+            sendFriendMessage(friendId, user.getNickname() + "请求添加您为好友！");
+        }
+
+        return friend;
     }
 
     /**
@@ -76,5 +99,26 @@ public class FriendService {
 
         sessionService.destroySession(friend.getSessionId());
         friendMapper.deleteFriend(friendId);
+    }
+
+    /**
+     * 查询当前邀请你为好友的人
+     * @param userId 你的ID
+     * @return 邀请你为好友的ID
+     */
+    public List<User> queryFriendRequest(int userId) {
+        return null;
+    }
+
+    private void sendFriendMessage(int id, @NotNull String message) {
+        // -1表示系统
+        var m = new Message(-1, -1, message, LocalDateTime.now());
+
+        try {
+            var text = s_mapper.writeValueAsString(m);
+            MessageWebsocketServer.sendMessage(text, id);
+        } catch (JsonProcessingException e) {
+            logger.error("发送好友通知失败", e);
+        }
     }
 }
