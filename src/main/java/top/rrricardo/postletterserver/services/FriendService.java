@@ -11,9 +11,9 @@ import top.rrricardo.postletterserver.mappers.FriendMapper;
 import top.rrricardo.postletterserver.mappers.UserMapper;
 import top.rrricardo.postletterserver.models.Friend;
 import top.rrricardo.postletterserver.models.Message;
-import top.rrricardo.postletterserver.models.User;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -48,7 +48,7 @@ public class FriendService {
                 friend = i;
             }
 
-            if (friendId == i.getFriendId() && userId == i.getUserId()) {
+            if (friendId == i.getUserId() && userId == i.getFriendId()) {
                 exFriend = i;
             }
         }
@@ -65,14 +65,25 @@ public class FriendService {
             friend = new Friend(userId, friendId);
             friendMapper.createFriend(friend);
 
-            sendFriendMessage(friendId, user.getNickname() + "请求添加您为好友！");
+            if (friend.getUserId() == friend.getFriendId()) {
+                // 请求添加自己为好友
+                // 不需要同意
+
+                var session = sessionService.createFriendSession(user, user);
+                friend.setSessionId(session.getId());
+                friendMapper.updateFriend(friend);
+            }
+            else {
+                sendFriendMessage(friendId, user.getNickname() + "请求添加您为好友！");
+            }
+
         } else if (friend == null) {
             // 通过好友请求
             friend = new Friend(userId, friendId);
 
             var session = sessionService.createFriendSession(user, friendUser);
             friend.setSessionId(session.getId());
-            exFriend.setFriendId(session.getId());
+            exFriend.setSessionId(session.getId());
 
             friendMapper.createFriend(friend);
             friendMapper.updateFriend(exFriend);
@@ -97,8 +108,22 @@ public class FriendService {
             throw new IllegalArgumentException("欲删除的好友关系不存在");
         }
 
+        var friends = friendMapper.getFriends();
+        Friend exFriend = null;
+        for (var i : friends) {
+            if (i.getUserId() == friend.getFriendId() && i.getFriendId() == friend.getUserId()) {
+                exFriend = i;
+                break;
+            }
+        }
+
+        if (exFriend == null) {
+            throw new IllegalArgumentException("未添加对方为好友");
+        }
+
         sessionService.destroySession(friend.getSessionId());
         friendMapper.deleteFriend(friendId);
+        friendMapper.deleteFriend(exFriend.getId());
     }
 
     /**
@@ -106,8 +131,70 @@ public class FriendService {
      * @param userId 你的ID
      * @return 邀请你为好友的ID
      */
-    public List<User> queryFriendRequest(int userId) {
-        return null;
+    public List<Friend> queryFriendRequest(int userId) {
+        var friends = friendMapper.getFriends();
+
+        List<Friend> result = new ArrayList<>();
+
+        for (var friend : friends) {
+            if (userId == friend.getFriendId()) {
+                result.add(friend);
+            }
+        }
+
+        var iter = result.iterator();
+        while (iter.hasNext()) {
+            var flag = false;
+            var friend = iter.next();
+
+            for (var i : friends) {
+                if (i.getUserId() == friend.getFriendId() && i.getFriendId() == friend.getUserId()) {
+                    flag = true;
+                    break;
+                }
+            }
+
+            if (flag) {
+                iter.remove();
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * 查询指定用户的好友关系
+     * @param userId 指定的用户ID
+     * @return 好友列表
+     */
+    public List<Friend> queryFriend(int userId) {
+        var friends = friendMapper.getFriends();
+        List<Friend> result = new ArrayList<>();
+
+        for (var friend : friends) {
+            if (userId == friend.getUserId()) {
+                result.add(friend);
+            }
+        }
+
+        var iter = result.iterator();
+        while (iter.hasNext()) {
+            var flag = false;
+            var friend = iter.next();
+
+            for (var i : friends) {
+                if (i.getUserId() == friend.getFriendId() && i.getFriendId() == friend.getUserId()) {
+                    flag = true;
+                    break;
+                }
+            }
+
+            if (!flag) {
+                iter.remove();
+            }
+        }
+
+        return result;
     }
 
     private void sendFriendMessage(int id, @NotNull String message) {

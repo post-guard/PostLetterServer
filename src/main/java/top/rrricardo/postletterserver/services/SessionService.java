@@ -60,7 +60,7 @@ public class SessionService {
         var session = new Session(name, details, 100);
 
         sessionMapper.createSession(session);
-        participantMapper.createParticipant(new Participant(creator.getId(), session.getId(), 2));
+        participantMapper.createParticipant(new Participant(creator.getId(), session.getId(), 3));
         for (var user : people) {
             if (user.getId() == creator.getId()) {
                 // 跳过群主

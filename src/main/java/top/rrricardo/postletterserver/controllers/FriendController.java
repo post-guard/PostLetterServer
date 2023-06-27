@@ -32,8 +32,26 @@ public class FriendController extends ControllerBase {
         if (userId <= 0) {
             return ok(friendMapper.getFriends());
         } else {
-            return ok(friendMapper.getFriendsByUserId(userId));
+            return ok(friendService.queryFriend(userId));
         }
+    }
+
+    @GetMapping("/{id}")
+    @Authorize
+    public ResponseEntity<ResponseDTO<Friend>> getFriend(@PathVariable int id) {
+        var friend = friendMapper.getFriendById(id);
+
+        if (friend == null) {
+            return notFound();
+        } else {
+            return ok(friend);
+        }
+    }
+
+    @GetMapping("/request/{userId}")
+    public ResponseEntity<ResponseDTO<List<Friend>>> getFriendRequest(
+            @PathVariable int userId) {
+        return ok(friendService.queryFriendRequest(userId));
     }
 
     @PostMapping("/")
