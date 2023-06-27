@@ -20,7 +20,7 @@
 
     <insert id="createMessage" parameterType="Message" useGeneratedKeys="true" keyProperty="id">
         insert into `messages` (sessionId, sendId, text, sendTime)
-        VALUES (#{sesssionId}, #{sendId}, #{text}, #{sendTime});
+        VALUES (#{sessionId}, #{sendId}, #{text}, #{sendTime});
     </insert>
 
     <update id="updateMessage" parameterType="Message">
