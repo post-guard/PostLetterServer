@@ -1,31 +1,22 @@
 package top.rrricardo.postletterserver.components;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.websocket.*;
 import jakarta.websocket.server.PathParam;
 import jakarta.websocket.server.ServerEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import top.rrricardo.postletterserver.exceptions.DeviceException;
-import top.rrricardo.postletterserver.models.HeartBeat;
-import top.rrricardo.postletterserver.services.HeartbeatService;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @ServerEndpoint("/websocket/heartbeat/{userId}")
 public class HeartBeatWebsocketServer {
-    private final HeartbeatService heartbeatService;
     private final static Logger logger = LoggerFactory.getLogger(MessageWebsocketServer.class);
     private final static ConcurrentHashMap<Integer, Session> sessionMap = new ConcurrentHashMap<>();
-    private final static ObjectMapper s_mapper = new ObjectMapper();
-
-    public HeartBeatWebsocketServer(HeartbeatService heartbeatService) {
-        this.heartbeatService = heartbeatService;
-    }
+    public final static ConcurrentHashMap<Integer, LocalDateTime> s_heartBeatMap = new ConcurrentHashMap<>();
 
     @OnOpen
     public void onOpen(Session session, @PathParam("userId") int id) {
@@ -64,15 +55,11 @@ public class HeartBeatWebsocketServer {
 
     @OnMessage
     public void onMessage(Session session, String message, @PathParam("userId") int id) {
-        logger.info("收到用户{}的心跳包", id);
-
-        try {
-            var heartbeat = s_mapper.readValue(message, HeartBeat.class);
-            heartbeatService.receiveHeartBeat(heartbeat);
-        } catch (JsonProcessingException e) {
-            logger.warn("解析用户{}发送的心跳包：{}错误", id, message, e);
-        } catch (DeviceException exception) {
-            logger.info("用户{}在新设备{}上登录", id, exception.getHostname());
+        if (message.equals("ping")) {
+            logger.info("用户{}心跳", id);
+            s_heartBeatMap.put(id, LocalDateTime.now());
+        } else {
+            logger.warn("收到用户{}的非法信息：{}", id, message);
         }
     }
 
