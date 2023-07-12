@@ -1,13 +1,8 @@
 package top.rrricardo.postletterserver.services;
 
-import io.jsonwebtoken.JwtException;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import top.rrricardo.postletterserver.components.HeartBeatWebsocketServer;
-import top.rrricardo.postletterserver.exceptions.DeviceException;
-import top.rrricardo.postletterserver.models.HeartBeat;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
